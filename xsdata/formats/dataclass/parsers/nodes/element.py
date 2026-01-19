@@ -111,7 +111,7 @@ class ElementNode(XmlNode):
             self.bind_attrs(params)
             self.bind_content(params, text, tail, objects)
             obj = self.config.class_factory(self.meta.clazz, params)
-            
+
             # Add location metadata if tracking is enabled
             if self.config.location_tracking and self.location is not None:
                 try:
