@@ -22,6 +22,7 @@ class TreeParser(NodeParser):
         qname: str,
         attrs: dict,
         ns_map: dict,
+        location: int | None = None,
     ) -> None:
         """Build and queue the XmlNode for the starting element.
 
@@ -32,6 +33,7 @@ class TreeParser(NodeParser):
             qname: The element qualified name
             attrs: The element attributes
             ns_map: The element namespace prefix-URI map
+            location: The source location (line number) of the element
         """
         try:
             item = queue[-1]
