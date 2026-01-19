@@ -59,6 +59,8 @@ class XmlEventHandler(XmlHandler):
         element_ns_map: dict = {}
         for event, element in context:
             if event == EventType.START:
+                # Standard library doesn't support sourceline
+                location = None
                 self.parser.start(
                     self.clazz,
                     self.queue,
@@ -66,6 +68,7 @@ class XmlEventHandler(XmlHandler):
                     element.tag,
                     element.attrib,
                     self.merge_parent_namespaces(element_ns_map),
+                    location,
                 )
                 element_ns_map = {}
             elif event == EventType.END:

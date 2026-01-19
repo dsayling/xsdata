@@ -57,6 +57,7 @@ class LxmlEventHandler(XmlHandler):
         """
         for event, element in context:
             if event == EventType.START:
+                location = getattr(element, 'sourceline', None)
                 self.parser.start(
                     self.clazz,
                     self.queue,
@@ -64,6 +65,7 @@ class LxmlEventHandler(XmlHandler):
                     element.tag,
                     element.attrib,
                     element.nsmap,
+                    location,
                 )
             elif event == EventType.END:
                 self.parser.end(

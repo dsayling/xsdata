@@ -35,6 +35,7 @@ class ParserConfig:
         fail_on_unknown_properties: Skip unknown properties or fail with exception
         fail_on_unknown_attributes: Skip unknown XML attributes or fail with exception
         fail_on_converter_warnings: Turn converter warnings to exceptions
+        location_tracking: Enable tracking of XML element locations (line numbers)
     """
 
     base_url: str | None = None
@@ -46,3 +47,4 @@ class ParserConfig:
     fail_on_unknown_properties: bool = True
     fail_on_unknown_attributes: bool = False
     fail_on_converter_warnings: bool = False
+    location_tracking: bool = False

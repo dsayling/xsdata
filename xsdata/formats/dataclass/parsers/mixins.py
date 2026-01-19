@@ -119,6 +119,7 @@ class PushParser:
         qname: str,
         attrs: dict[str, str],
         ns_map: dict[str | None, str],
+        location: int | None = None,
     ) -> None:
         """Build and queue the XmlNode for the starting element.
 
@@ -129,6 +130,7 @@ class PushParser:
             qname: The element qualified name
             attrs: The element attributes
             ns_map: The element namespace prefix-URI map
+            location: The source location (line number) of the element
         """
 
     @abc.abstractmethod
