@@ -31,6 +31,7 @@ class ElementNode(XmlNode):
         derived_factory: Derived element factory
         xsi_type: The xml type substitution
         xsi_nil: Specifies whether element has the xsi:nil attribute
+        location: The source location (line number) of the element
 
     Attributes:
         assigned: A set to store the processed sub-nodes
@@ -43,6 +44,7 @@ class ElementNode(XmlNode):
         "config",
         "context",
         "derived_factory",
+        "location",
         "meta",
         "mixed",
         "ns_map",
@@ -64,6 +66,7 @@ class ElementNode(XmlNode):
         derived_factory: type | None = None,
         xsi_type: str | None = None,
         xsi_nil: bool | None = None,
+        location: int | None = None,
     ):
         """Initialize the xml node."""
         self.meta = meta
@@ -76,6 +79,7 @@ class ElementNode(XmlNode):
         self.derived_factory = derived_factory
         self.xsi_type = xsi_type
         self.xsi_nil = xsi_nil
+        self.location = location
         self.assigned: set[int] = set()
         self.tail_processed: bool = False
 
@@ -107,6 +111,14 @@ class ElementNode(XmlNode):
             self.bind_attrs(params)
             self.bind_content(params, text, tail, objects)
             obj = self.config.class_factory(self.meta.clazz, params)
+
+            # Add location metadata if tracking is enabled
+            if self.config.location_tracking and self.location is not None:
+                try:
+                    obj._xml_location_ = self.location
+                except AttributeError:
+                    # Object doesn't support attribute assignment (e.g., frozen dataclass)
+                    pass
 
         if self.derived_factory:
             obj = self.derived_factory(qname=qname, value=obj, type=self.xsi_type)

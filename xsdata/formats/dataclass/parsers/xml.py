@@ -55,6 +55,7 @@ class UserXmlParser(NodeParser):
         qname: str,
         attrs: dict,
         ns_map: dict,
+        location: int | None = None,
     ) -> None:
         """Build and queue the XmlNode for the starting element.
 
@@ -67,8 +68,9 @@ class UserXmlParser(NodeParser):
             qname: The element qualified name
             attrs: The element attributes
             ns_map: The element namespace prefix-URI map
+            location: The source location (line number) of the element
         """
-        super().start(clazz, queue, objects, qname, attrs, ns_map)
+        super().start(clazz, queue, objects, qname, attrs, ns_map, location)
         self.emit_event(EventType.START, qname, attrs=attrs)
 
     def end(

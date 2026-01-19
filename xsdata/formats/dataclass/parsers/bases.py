@@ -73,6 +73,7 @@ class NodeParser(PushParser):
         qname: str,
         attrs: dict,
         ns_map: dict,
+        location: int | None = None,
     ) -> None:
         """Build and queue the XmlNode for the starting element.
 
@@ -83,6 +84,7 @@ class NodeParser(PushParser):
             qname: The element qualified name
             attrs: The element attributes
             ns_map: The element namespace prefix-URI map
+            location: The source location (line number) of the element
         """
         from xsdata.formats.dataclass.parsers.nodes import ElementNode, WrapperNode
 
@@ -92,6 +94,9 @@ class NodeParser(PushParser):
                 child = cast(XmlNode, WrapperNode(parent=item))
             else:
                 child = item.child(qname, attrs, ns_map, len(objects))
+                # Set location on child node if it's an ElementNode
+                if isinstance(child, ElementNode) and location is not None:
+                    child.location = location
         except IndexError:
             xsi_type = ParserUtils.xsi_type(attrs, ns_map)
 
@@ -124,6 +129,7 @@ class NodeParser(PushParser):
                 derived_factory=derived_factory,
                 xsi_type=xsi_type if derived_factory else None,
                 xsi_nil=xsi_nil,
+                location=location,
             )
 
         queue.append(child)
@@ -199,6 +205,7 @@ class RecordParser(NodeParser):
         qname: str,
         attrs: dict,
         ns_map: dict,
+        location: int | None = None,
     ) -> None:
         """Build and queue the XmlNode for the starting element.
 
@@ -211,9 +218,10 @@ class RecordParser(NodeParser):
             qname: The element qualified name
             attrs: The element attributes
             ns_map: The element namespace prefix-URI map
+            location: The source location (line number) of the element
         """
         self.events.append((EventType.START, qname, copy.deepcopy(attrs), ns_map))
-        super().start(clazz, queue, objects, qname, attrs, ns_map)
+        super().start(clazz, queue, objects, qname, attrs, ns_map, location)
 
     def end(
         self,
